@@ -1,0 +1,36 @@
+[package]
+name = "sycamore-router"
+categories = ["gui", "wasm", "web-programming"]
+description = "Router for Sycamore"
+keywords = ["wasm", "gui", "reactive"]
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+sycamore = { workspace = true }
+sycamore-router-macro = { workspace = true }
+wasm-bindgen = "0.2.83"
+
+[dependencies.web-sys]
+features = [
+	"Event",
+	"EventTarget",
+	"History",
+	"HtmlAnchorElement",
+	"HtmlBaseElement",
+	"KeyboardEvent",
+	"Location",
+	"PopStateEvent",
+	"Url",
+	"Window",
+	"UrlSearchParams",
+]
+version = "0.3.60"
+
+[lints]
+workspace = true

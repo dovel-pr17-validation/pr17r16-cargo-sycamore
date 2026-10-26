@@ -1,0 +1,19 @@
+[package]
+name = "todomvc"
+version = "0.1.0"
+edition.workspace = true
+publish = false
+
+[dependencies]
+console_error_panic_hook = "0.1.7"
+serde = { version = "1.0.147", features = ["derive"] }
+serde_json = "1.0.89"
+sycamore = { path = "../../packages/sycamore", features = ["serde"] }
+uuid = { version = "1.2.2", features = ["serde", "v4", "js"] }
+
+[dependencies.web-sys]
+features = ["Location", "Storage", "HtmlInputElement"]
+version = "0.3.60"
+
+[lints]
+workspace = true

@@ -1,0 +1,31 @@
+[package]
+name = "sycamore-macro"
+categories = ["gui", "wasm", "web-programming"]
+description = "proc-macro crate for Sycamore"
+keywords = ["wasm", "gui", "reactive"]
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0.47"
+quote = "1.0.21"
+syn = { version = "3.0.6", features = ["extra-traits", "full"] }
+sycamore-view-parser = { workspace = true }
+
+[dev-dependencies]
+sycamore = { path = "../sycamore", features = ["suspense"] }
+trybuild = "1.0.71"
+
+[features]
+default = []
+
+[lints]
+workspace = true

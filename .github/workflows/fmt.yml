@@ -1,0 +1,22 @@
+name: Format
+
+on:
+  pull_request:
+    paths:
+      - "**/*.rs"
+  push:
+    branches: [main]
+    paths:
+      - "**/*.rs"
+jobs:
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        run: rustup default stable
+
+      - name: cargo fmt
+        run: cargo fmt --all -- --check

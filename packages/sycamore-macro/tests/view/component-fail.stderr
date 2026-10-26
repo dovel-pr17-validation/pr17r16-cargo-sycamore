@@ -1,0 +1,104 @@
+error: unexpected end of input, expected either `(` or `{` after element tag
+  --> tests/view/component-fail.rs:34:23
+   |
+34 |         let _: View = view! { Component };
+   |                       ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in the macro `view` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: expected either `(` or `{` after element tag
+  --> tests/view/component-fail.rs:48:52
+   |
+48 |         let _: View = view! { PropsComponent { prop: "123" } }; // Legacy syntax.
+   |                                                    ^
+
+error[E0425]: cannot find function, tuple struct or tuple variant `UnknownComponent` in this scope
+  --> tests/view/component-fail.rs:28:13
+   |
+28 |             UnknownComponent {}
+   |             ^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `UnknownComponent` in this scope
+  --> tests/view/component-fail.rs:31:13
+   |
+31 |             UnknownComponent {}
+   |             ^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0599]: no method named `not_a_prop` found for struct `sycamore::web::View<T>` in the current scope
+  --> tests/view/component-fail.rs:36:23
+   |
+35 |           let _: View = view! {
+   |  _______________________-
+36 | |             Component(not_a_prop=1)
+   | |                      -^^^^^^^^^^ method not found in `sycamore::web::View`
+   | |______________________|
+   |
+
+error[E0277]: the trait bound `PropsComponentPropsBuilder<((),)>: Into<sycamore::web::View>` is not satisfied
+  --> tests/view/component-fail.rs:39:23
+   |
+39 |           let _: View = view! {
+   |  _______________________^
+40 | |             PropsComponent {}
+41 | |         };
+   | |_________^ unsatisfied trait bound
+   |
+help: the trait `FnMut()` is not implemented for `PropsComponentPropsBuilder<((),)>`
+  --> tests/view/component-fail.rs:3:1
+   |
+ 3 | #[component]
+   | ^^^^^^^^^^^^
+   = note: required for `sycamore::web::View` to implement `From<PropsComponentPropsBuilder<((),)>>`
+   = note: required for `PropsComponentPropsBuilder<((),)>` to implement `Into<sycamore::web::View>`
+   = note: this error originates in the macro `view` which comes from the expansion of the attribute macro `component` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `PropsComponentPropsBuilder<((),)>: Into<sycamore::web::View>` is not satisfied
+  --> tests/view/component-fail.rs:42:23
+   |
+42 |           let _: View = view! {
+   |  _______________________^
+43 | |             PropsComponent {}
+44 | |         };
+   | |_________^ unsatisfied trait bound
+   |
+help: the trait `FnMut()` is not implemented for `PropsComponentPropsBuilder<((),)>`
+  --> tests/view/component-fail.rs:3:1
+   |
+ 3 | #[component]
+   | ^^^^^^^^^^^^
+   = note: required for `sycamore::web::View` to implement `From<PropsComponentPropsBuilder<((),)>>`
+   = note: required for `PropsComponentPropsBuilder<((),)>` to implement `Into<sycamore::web::View>`
+   = note: this error originates in the macro `view` which comes from the expansion of the attribute macro `component` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> tests/view/component-fail.rs:46:33
+   |
+46 |             PropsComponent(prop=123)
+   |                            ---- ^^^ expected `&str`, found integer
+   |                            |
+   |                            arguments to this method are incorrect
+   |
+note: method defined here
+  --> tests/view/component-fail.rs:4:23
+   |
+ 4 | pub fn PropsComponent(prop: &'static str) -> View {
+   |                       ^^^^--------------
+
+error[E0277]: the trait bound `MaybeDyn<Option<Cow<'static, str>>>: From<{integer}>` is not satisfied
+  --> tests/view/component-fail.rs:51:39
+   |
+51 |             AttributesComponent(class=123)
+   |                                       ^^^ the trait `From<{integer}>` is not implemented for `MaybeDyn<Option<Cow<'static, str>>>`
+   |
+   = help: the following other types implement trait `From<T>`:
+             `MaybeDyn<Option<Cow<'_, str>>>` implements `From<&str>`
+             `MaybeDyn<Option<Cow<'_, str>>>` implements `From<Cow<'_, str>>`
+             `MaybeDyn<Option<Cow<'_, str>>>` implements `From<Option<&str>>`
+             `MaybeDyn<Option<Cow<'_, str>>>` implements `From<Option<String>>`
+             `MaybeDyn<Option<Cow<'_, str>>>` implements `From<String>`
+   = note: required for `{integer}` to implement `Into<MaybeDyn<Option<Cow<'static, str>>>>`
+note: required by a bound in `sycamore::web::HtmlGlobalAttributes::class`
+  --> $WORKSPACE/packages/sycamore-web/src/elements.rs
+   |
+   |         class: impl Into<StringAttribute>,
+   |                     ^^^^^^^^^^^^^^^^^^^^^ required by this bound in `HtmlGlobalAttributes::class`

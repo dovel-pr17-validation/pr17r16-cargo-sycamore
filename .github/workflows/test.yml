@@ -1,0 +1,139 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }} (using rustc ${{ matrix.rust }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        rust:
+          - 1.94
+          - stable
+          - nightly
+        os:
+          - ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        run: |
+          rustup default ${{ matrix.rust }}
+          rustup target add wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Cargo generate-lockfile
+        run: cargo generate-lockfile
+
+      - name: Cargo cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Run tests for packages/sycamore with default features
+        # Only run tests for sycamore to prevent stray feature flags from other tests.
+        run: cd packages/sycamore && cargo test
+
+      - name: Run tests (with UI tests) on 1.94
+        if: matrix.rust == '1.94'
+        env:
+          RUN_UI_TESTS: true
+        run: cargo test
+
+      - name: Run tests on stable
+        if: matrix.rust == 'stable'
+        run: cargo test
+
+      - name: Run all tests on nightly
+        if: matrix.rust == 'nightly'
+        run: cargo test --all-features
+
+      - name: Run tests with no default features on nightly
+        if: matrix.rust == 'nightly'
+        run: cargo test --no-default-features -p sycamore
+
+      - name: Run headless browser tests on nightly
+        run: cd packages/sycamore && wasm-pack test --firefox --chrome --headless --all-features
+        if: matrix.rust == 'nightly'
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: -Dwarnings
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Cargo generate-lockfile
+        run: cargo generate-lockfile
+
+      - name: Cargo cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Run clippy
+        run: cargo clippy
+
+  miri:
+    name: Miri
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Miri
+        run: |
+          MIRI_NIGHTLY=nightly-$(curl -s https://rust-lang.github.io/rustup-components-history/x86_64-unknown-linux-gnu/miri)
+          echo "Installing latest nightly with Miri: $MIRI_NIGHTLY"
+          rustup set profile minimal
+          rustup default "$MIRI_NIGHTLY"
+          rustup component add miri
+
+      - name: Cargo generate-lockfile
+        run: cargo generate-lockfile
+
+      - name: Cargo cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Run tests with all features
+        run: |
+          cargo miri test --all-features

@@ -1,0 +1,20 @@
+[package]
+name = "sycamore-view-parser"
+categories = ["gui", "wasm", "web-programming"]
+description = "parser for Sycamore view syntax"
+keywords = ["wasm", "gui", "reactive"]
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+proc-macro2 = "1.0.47"
+quote = "1.0.21"
+syn = { version = "3.0.6", features = ["extra-traits", "full"] }
+
+[lints]
+workspace = true

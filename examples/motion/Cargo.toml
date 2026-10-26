@@ -1,0 +1,12 @@
+[package]
+name = "motion"
+version = "0.1.0"
+edition.workspace = true
+publish = false
+
+[dependencies]
+console_error_panic_hook = "0.1.7"
+sycamore = { path = "../../packages/sycamore" }
+
+[lints]
+workspace = true

@@ -1,0 +1,28 @@
+[package]
+name = "sycamore-reactive"
+categories = ["gui", "wasm", "web-programming"]
+description = "Reactive primitives for Sycamore"
+keywords = ["wasm", "gui", "reactive"]
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+paste = "1.0.12"
+serde = { version = "1.0.188", optional = true }
+slotmap = "1.0.6"
+smallvec = { version = "1.11.1", features = ["union"] }
+wasm-bindgen = { version = "0.2.93", optional = true }
+
+[features]
+default = []
+nightly = []
+serde = ["dep:serde"]
+wasm-bindgen = ["dep:wasm-bindgen"]
+
+[lints]
+workspace = true

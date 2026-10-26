@@ -1,0 +1,37 @@
+error: component must return `sycamore::view::View`
+ --> tests/component/component-fail.rs:4:9
+  |
+4 | fn Comp1() {
+  |         ^^
+
+error: const functions can't be components
+ --> tests/component/component-fail.rs:9:1
+  |
+9 | const fn Comp2() -> View {
+  | ^^^^^
+
+error: extern functions can't be components
+  --> tests/component/component-fail.rs:14:1
+   |
+14 | extern "C" fn Comp3() -> View {
+   | ^^^^^^
+
+error: `self` cannot be a property
+  --> tests/component/component-fail.rs:19:10
+   |
+19 | fn Comp4(self) -> View {
+   |          ^^^^
+
+error: expected `fn`
+  --> tests/component/component-fail.rs:24:1
+   |
+24 | struct Comp5;
+   | ^^^^^^
+
+error: `self` parameter is only allowed in associated functions
+  --> tests/component/component-fail.rs:19:10
+   |
+19 | fn Comp4(self) -> View {
+   |          ^^^^ not semantically valid as function parameter
+   |
+   = note: associated functions are those in `impl` or `trait` definitions
